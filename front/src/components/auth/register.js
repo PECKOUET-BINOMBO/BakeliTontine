@@ -7,6 +7,7 @@ function Register() {
   ////////////////////////////création d'un état pour gérer les données du formulaire//////////////////////////////////////
   const [nom, setNom] = React.useState("");
   const [prenom, setPrenom] = React.useState("");
+  const [role, setRole] = React.useState("");
   const [date_naissance, setDate_naissance] = React.useState("");
   const [profession, setProfession] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -20,8 +21,8 @@ function Register() {
   const [errors, setErrors] = useState({});
 
   //création d'une constante navigate pour la redirection
-const navigate = useNavigate();  
-  
+  const navigate = useNavigate();
+
   /////////////////////////////action au submit//////////////////////////
   const handleSubmit = (e) => {
     //empêcher le comportement par défaut du formulaire
@@ -30,6 +31,7 @@ const navigate = useNavigate();
     const data = {
       nom: nom,
       prenom: prenom,
+      role: role,
       date_naissance: date_naissance,
       profession: profession,
       password: password,
@@ -39,13 +41,11 @@ const navigate = useNavigate();
       adresse: adresse,
       organisation: organisation,
     };
-  
 
+    /////////////////////////////envoi des données au backend//////////////////////////
 
-/////////////////////////////envoi des données au backend//////////////////////////
-  
-axios
-    //envoi de la requête post au backend
+    axios
+      //envoi de la requête post au backend
       .post("http://localhost:8000/api/register", data)
       //récupération de la réponse du backend si la requête est réussie
       .then((res) => {
@@ -59,9 +59,6 @@ axios
         console.log(err.response.data.errors);
         setErrors(err.response.data.errors);
       });
-
-
-
   };
 
   return (
@@ -84,8 +81,8 @@ axios
                   value={nom}
                   onChange={(e) => setNom(e.target.value)}
                 />
-                {errors.nom && (<p className="text-danger">{errors.nom}</p>)}
-             </div>
+                {errors.nom && <p className="text-danger">{errors.nom}</p>}
+              </div>
               <div className="form-group col-12 col-md-6">
                 <label htmlFor="prenom">Prénom</label>
                 <input
@@ -96,7 +93,9 @@ axios
                   value={prenom}
                   onChange={(e) => setPrenom(e.target.value)}
                 />
-                {errors.prenom && (<p className="text-danger">{errors.prenom}</p>)}
+                {errors.prenom && (
+                  <p className="text-danger">{errors.prenom}</p>
+                )}
               </div>
             </div>
             <div className="row">
@@ -110,7 +109,9 @@ axios
                   value={date_naissance}
                   onChange={(e) => setDate_naissance(e.target.value)}
                 />
-                {errors.date_naissance && (<p className="text-danger">{errors.date_naissance}</p>)}
+                {errors.date_naissance && (
+                  <p className="text-danger">{errors.date_naissance}</p>
+                )}
               </div>
               <div className="form-group col-12 col-md-6">
                 <label htmlFor="profession">Profession</label>
@@ -122,7 +123,9 @@ axios
                   value={profession}
                   onChange={(e) => setProfession(e.target.value)}
                 />
-               {errors.profession && (<p className="text-danger">{errors.profession}</p>)}
+                {errors.profession && (
+                  <p className="text-danger">{errors.profession}</p>
+                )}
               </div>
             </div>
 
@@ -137,8 +140,9 @@ axios
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                {errors.password && (<p className="text-danger">{errors.password}</p>)}
-                
+                {errors.password && (
+                  <p className="text-danger">{errors.password}</p>
+                )}
               </div>
               <div className="form-group col-12 col-md-6">
                 <label htmlFor="confirmpassword">
@@ -152,7 +156,9 @@ axios
                   value={password_confirmation}
                   onChange={(e) => setPassword_confirmation(e.target.value)}
                 />
-                {errors.password_confirmation && (<p className="text-danger">{errors.password_confirmation}</p>)}
+                {errors.password_confirmation && (
+                  <p className="text-danger">{errors.password_confirmation}</p>
+                )}
               </div>
             </div>
 
@@ -167,7 +173,7 @@ axios
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-               {errors.email && (<p className="text-danger">{errors.email}</p>)}
+                {errors.email && <p className="text-danger">{errors.email}</p>}
               </div>
               <div className="form-group col-12 col-md-6">
                 <label htmlFor="tel">Téléphone</label>
@@ -179,7 +185,9 @@ axios
                   value={telephone}
                   onChange={(e) => setTelephone(e.target.value)}
                 />
-              {errors.telephone && (<p className="text-danger">{errors.telephone}</p>)}
+                {errors.telephone && (
+                  <p className="text-danger">{errors.telephone}</p>
+                )}
               </div>
             </div>
             <div className="row">
@@ -193,7 +201,9 @@ axios
                   value={adresse}
                   onChange={(e) => setAdresse(e.target.value)}
                 />
-                {errors.adresse && (<p className="text-danger">{errors.adresse}</p>)}
+                {errors.adresse && (
+                  <p className="text-danger">{errors.adresse}</p>
+                )}
               </div>
 
               <div className="form-group col-12 col-md-6">
@@ -206,7 +216,21 @@ axios
                   value={organisation}
                   onChange={(e) => setOrganisation(e.target.value)}
                 />
-               {errors.organisation && (<p className="text-danger">{errors.organisation}</p>)}
+                {errors.organisation && (
+                  <p className="text-danger">{errors.organisation}</p>
+                )}
+              </div>
+              <div className="form-group col-12 mt-4">
+                <label htmlFor="role">Rôle</label>
+                <select className="form-control" name="role" onChange={(e) => setRole(e.target.value)}>
+                  <option></option>
+                  <option value="Admin">Admin</option>
+                  <option
+                    value="Simple membre">
+                    Simple membre
+                  </option>
+                </select>
+                {errors.role && <p className="text-danger">{errors.role}</p>}
               </div>
             </div>
             <div className="row">

@@ -16,16 +16,18 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('prenom');
-            //$table->string('role')->default('user');
+            $table->string('role');
             $table->string('date_naissance');
             $table->string('profession');
             $table->string('telephone');
             $table->string('adresse');
             $table->string('organisation');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+           // $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('token');
+            $table->string('expire_at');
+           // $table->rememberToken();
             $table->timestamps();
         });
     }

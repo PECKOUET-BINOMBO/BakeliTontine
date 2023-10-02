@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 use App\Models\User;
+use App\Mail\RegisterMail;
+use Illuminate\Support\Str;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -34,24 +40,35 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
+        $token = Str::random(60); // Générez une chaîne aléatoire de 60 caractères
+        $expiration = Carbon::now()->addDay(); // Date d'expiration d'un jour à partir de maintenant
+
+        //$expiration = Carbon::now()->addHour(); // Ajoute 1 heure à la date actuelle
+        //$expiration = Carbon::now()->addMinute(); // Ajoute 1 minute à la date actuelle
+        //$expiration = Carbon::now()->addMinutes(30); // Ajoute 30 minutes à la date actuelle
+        //$expiration = Carbon::now()->addWeeks(2); // Ajoute 2 semaines à la date actuelle
+        //$expiration = Carbon::now()->addMonths(3); // Ajoute 3 mois à la date actuelle
+        //$expiration = Carbon::now()->addYear(); // Ajoute 1 an à la date actuelle
+
         $request->validate([
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
-            //'role' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
             'date_naissance' => 'required|date',
             'profession' => 'required|string|max:255',
             'telephone' => 'required|string|max:255',
             'adresse' => 'required|string|max:255',
             'organisation' => 'required|string|max:255',
             'email' => 'required|string|email:rfc,dns|max:255|unique:users',
-            'password' => 'required|string|min:4',//|confirmed
+            'password' => 'required|string|min:4', //|confirmed
             'password_confirmation' => 'required|string|min:4|same:password',
+
         ]);
 
         $user = User::create([
             'name' => $request->nom,
             'prenom' => $request->prenom,
-            //'role' => $request->role,
+            'role' => $request->role,
             'date_naissance' => $request->date_naissance,
             'profession' => $request->profession,
             'telephone' => $request->telephone,
@@ -59,15 +76,42 @@ class UserController extends Controller
             'organisation' => $request->organisation,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'token' => $token,
+            'expire_at' => $expiration
+
         ]);
 
+        $mailData = [
+            'title' => ' Félicitations et Bienvenue sur Bakeli Tontinne',
+            'body' => 'Cher ' . $request->prenom . ' ' . $request->nom . ',',
+            'email' => $request->email,
+            'password' => $request->password,
+            'lien' => 'http://localhost:3000/login?tokenUrl='.$token,
+        ];
+
+        Mail::to($request->email)->send(new RegisterMail($mailData));
 
         return response()->json([
             'message' => 'Utilisateur créé avec succès',
             'user' => $user,
         ]);
     }
+    /***
+     * verifToken
+     */
+    public function verifToken(){
+        $token = "XNZ6WQjkHglCQ4p7cth9cnq9jNdU5ivNNttYgFeUDaAbWRnXPkdykPbUlgi3";//request()->input('token');
 
+
+        $tokenVerif = DB::table('users')->where('token', $token)->first();
+        if(!$tokenVerif || Carbon::now() > $tokenVerif->expire_at){
+            return response()->json([
+                'message'=> 'Ce lien de confirmation a expiré, veuillez vous ré-inscrire',
+
+            ]);
+
+        }
+    }
     /**
      * Login user and create token
      */
@@ -78,20 +122,20 @@ class UserController extends Controller
             'email' => 'required|string|email:rfc,dns|max:255',
             'password' => 'required|string|min:4',
         ]);
-//verification de l'existence de l'utilisateur à partir de son email
+        //verification de l'existence de l'utilisateur à partir de son email
         $user = User::where('email', $request->email)->first();
-//verification du mot de passe de l'utilisateur selon l'email
+        //verification du mot de passe de l'utilisateur selon l'email
         if ($user && Hash::check($request->password, $user->password)) {
-//creation du token
+            //creation du token
             $token = $user->createToken('authToken')->accessToken;
-//retourne le token et l'utilisateur connecté
+            //retourne le token et l'utilisateur connecté
             return response()->json([
                 'message' => 'Connexion réussie',
                 'user' => $user,
                 'token' => $token,
             ], 200);
         }
-//retourne un message d'erreur si l'utilisateur n'existe pas ou si le mot de passe est incorrect
+        //retourne un message d'erreur si l'utilisateur n'existe pas ou si le mot de passe est incorrect
         return response()->json([
             'message' => 'Identifiants incorrects',
         ], 401);
@@ -136,70 +180,69 @@ class UserController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request)
-{
-    // Vérifiez d'abord le token et l'utilisateur
-    $token = $request->bearerToken();
-//401
-     if (!$token) {
-         return response()->json([
-             'message' => 'Token manquant ou invalide',
-         ], 401);
-     }
-//404
-     $user = Auth::guard('api')->user();
+    {
+        // Vérifiez d'abord le token et l'utilisateur
+        $token = $request->bearerToken();
+        //401
+        if (!$token) {
+            return response()->json([
+                'message' => 'Token manquant ou invalide',
+            ], 401);
+        }
+        //404
+        $user = Auth::guard('api')->user();
 
-     if (!$user) {
-         return response()->json([
-             'message' => 'Utilisateur introuvable',
-         ], 404);
-     }
-//405
-if ($request->method() != 'POST') {
-    return response()->json([
-        'message' => 'Méthode non autorisée',
-    ], 405);
-}
+        if (!$user) {
+            return response()->json([
+                'message' => 'Utilisateur introuvable',
+            ], 404);
+        }
+        //405
+        if ($request->method() != 'POST') {
+            return response()->json([
+                'message' => 'Méthode non autorisée',
+            ], 405);
+        }
 
-    $request->validate([
-        'nom' => 'required|string|max:255',
-        'prenom' => 'required|string|max:255',
-        //'role' => 'required|string|max:255',
-        'date_naissance' => 'required|date',
-        'profession' => 'required|string|max:255',
-        'telephone' => 'required|string|max:255',
-        'adresse' => 'required|string|max:255',
-        'organisation' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        'password' => 'required|string|confirmed|min:4',
-    ]);
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'prenom' => 'required|string|max:255',
+            //'role' => 'required|string|max:255',
+            'date_naissance' => 'required|date',
+            'profession' => 'required|string|max:255',
+            'telephone' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+            'organisation' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'required|string|confirmed|min:4',
+        ]);
 
-    $user->update([
-        'name' => $request->nom,
-        'prenom' => $request->prenom,
-        //'role' => $request->role,
-        'date_naissance' => $request->date_naissance,
-        'profession' => $request->profession,
-        'telephone' => $request->telephone,
-        'adresse' => $request->adresse,
-        'organisation' => $request->organisation,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-    ]);
+        $user->update([
+            'name' => $request->nom,
+            'prenom' => $request->prenom,
+            //'role' => $request->role,
+            'date_naissance' => $request->date_naissance,
+            'profession' => $request->profession,
+            'telephone' => $request->telephone,
+            'adresse' => $request->adresse,
+            'organisation' => $request->organisation,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
 
 
-    return response()->json([
-        'message' => 'Utilisateur mis à jour avec succès',
-        'name' => $request->names,
-        'prenom' => $request->prenom,
-        'date_naissance' => $request->date_naissance,
-        'profession' => $request->profession,
-        'telephone' => $request->telephone,
-        'adresse' => $request->adresse,
-        'organisation' => $request->organisation,
-        'email' => $request->email,
-    ], 200);
-
-}
+        return response()->json([
+            'message' => 'Utilisateur mis à jour avec succès',
+            'name' => $request->names,
+            'prenom' => $request->prenom,
+            'date_naissance' => $request->date_naissance,
+            'profession' => $request->profession,
+            'telephone' => $request->telephone,
+            'adresse' => $request->adresse,
+            'organisation' => $request->organisation,
+            'email' => $request->email,
+        ], 200);
+    }
 
 
     /**
@@ -232,5 +275,4 @@ if ($request->method() != 'POST') {
             'message' => 'Déconnexion réussie',
         ], 200);
     }
-
 }
