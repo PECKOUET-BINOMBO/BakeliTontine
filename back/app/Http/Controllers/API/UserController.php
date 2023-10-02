@@ -40,15 +40,7 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
-        $token = Str::random(60); // Générez une chaîne aléatoire de 60 caractères
-        $expiration = Carbon::now()->addDay(); // Date d'expiration d'un jour à partir de maintenant
 
-        //$expiration = Carbon::now()->addHour(); // Ajoute 1 heure à la date actuelle
-        //$expiration = Carbon::now()->addMinute(); // Ajoute 1 minute à la date actuelle
-        //$expiration = Carbon::now()->addMinutes(30); // Ajoute 30 minutes à la date actuelle
-        //$expiration = Carbon::now()->addWeeks(2); // Ajoute 2 semaines à la date actuelle
-        //$expiration = Carbon::now()->addMonths(3); // Ajoute 3 mois à la date actuelle
-        //$expiration = Carbon::now()->addYear(); // Ajoute 1 an à la date actuelle
 
         $request->validate([
             'nom' => 'required|string|max:255',
@@ -76,8 +68,6 @@ class UserController extends Controller
             'organisation' => $request->organisation,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'token' => $token,
-            'expire_at' => $expiration
 
         ]);
 
@@ -86,7 +76,7 @@ class UserController extends Controller
             'body' => 'Cher ' . $request->prenom . ' ' . $request->nom . ',',
             'email' => $request->email,
             'password' => $request->password,
-            'lien' => 'http://localhost:3000/login?tokenUrl='.$token,
+            'lien' => 'http://localhost:3000/login',
         ];
 
         Mail::to($request->email)->send(new RegisterMail($mailData));
@@ -96,22 +86,7 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
-    /***
-     * verifToken
-     */
-    public function verifToken(){
-        $token = "XNZ6WQjkHglCQ4p7cth9cnq9jNdU5ivNNttYgFeUDaAbWRnXPkdykPbUlgi3";//request()->input('token');
 
-
-        $tokenVerif = DB::table('users')->where('token', $token)->first();
-        if(!$tokenVerif || Carbon::now() > $tokenVerif->expire_at){
-            return response()->json([
-                'message'=> 'Ce lien de confirmation a expiré, veuillez vous ré-inscrire',
-
-            ]);
-
-        }
-    }
     /**
      * Login user and create token
      */

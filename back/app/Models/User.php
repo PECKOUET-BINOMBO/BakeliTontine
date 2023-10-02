@@ -29,8 +29,7 @@ class User extends Authenticatable
         'organisation',
         'email',
         'password',
-        'token',
-        'expire_at',
+       
     ];
 
     /**

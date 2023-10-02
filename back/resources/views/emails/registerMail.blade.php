@@ -16,9 +16,7 @@
 <p><strong>Adresse e-mail : {{$mailData['email']}}</strong></p>
 <p><strong>Mot de passe : "{{$mailData['password']}}"</strong>  .(Nous vous recommandons de le changer après la première connexion)</p>
 
-<p style="color: red;"><strong>Avant de commencer à utiliser votre compte, nous devons confirmer votre adresse e-mail. Pour cela, veuillez cliquer sur le lien de confirmation ci-dessous : <br> {{$mailData['lien']}}</strong></p>
-
-<p>Une fois que vous aurez cliqué sur le lien, votre compte sera activé et vous pourrez accéder à toutes les fonctionnalités de notre site.</p>
+<p><strong>Connectez-vous à parir du lien ci-dessous : <br> {{$mailData['lien']}}</strong></p>
 
 <p>Si vous n'avez pas créé de compte sur Bakeli Tontine, veuillez ignorer cet e-mail.</p>
 

@@ -21,7 +21,6 @@ use App\Http\Controllers\API\UserController;
 
 Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::post('/login', [UserController::class, 'login'])->name('login');
-Route::get('/login', [UserController::class, 'verifToken']);
 Route::get('/users', [UserController::class, 'index'])->name('users');
 
 Route::middleware('auth:api')->group(function () {
@@ -29,3 +28,4 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/user', [UserController::class, 'update'])->name('user.update');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 });
+
