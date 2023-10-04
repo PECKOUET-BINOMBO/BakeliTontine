@@ -28,10 +28,11 @@ function Sidebar() {
   }
   //création d'une constante navigate pour la redirection
   const navigate = useNavigate();
-  //logout
+  // Fonction pour se déconnecter
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const handleLogout = () => { 
+    localStorage.removeItem("token"); 
+    localStorage.removeItem("expires_at");
     navigate("/login");
   };
 

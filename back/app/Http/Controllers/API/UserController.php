@@ -103,9 +103,18 @@ class UserController extends Controller
 
         // Vérification du mot de passe de l'utilisateur selon l'email
         if ($user && Hash::check($request->password, $user->password)) {
-            // Création du jeton avec date d'expiration à 1 heure à partir de maintenant
-            $token = $user->createToken('authToken', ['*'])->accessToken;
-            $expiresAt = Carbon::now()->addHour(); // Définit l'heure d'expiration à 1 heure à partir de maintenant
+
+            // Création du jeton
+            $token = $user->createToken('authToken', ['*'])->accessToken; // Crée un jeton d'accès avec tous les privilèges
+
+            //$expiresAt = Carbon::now()->addHour(); // Définit l'heure d'expiration à 1 heure à partir de maintenant
+            //$expiresAt = Carbon::now()->addSecond(30); // Définit l'heure d'expiration à 30 secondes à partir de maintenant
+            $expiresAt = Carbon::now()->addMinute(1); // Définit l'heure d'expiration à 30 minutes à partir de maintenant
+            //$expiresAt = Carbon::now()->addDay(30); // Définit l'heure d'expiration à 30 jours à partir de maintenant
+            //$expiresAt = Carbon::now()->addMonth(30); // Définit l'heure d'expiration à 30 mois à partir de maintenant
+            //$expiresAt = Carbon::now()->addYear(30); // Définit l'heure d'expiration à 30 années à partir de maintenant
+
+
 
             // Mettez à jour l'heure d'expiration du jeton dans la base de données
             DB::table('oauth_access_tokens')
@@ -113,7 +122,6 @@ class UserController extends Controller
                 ->update([
                     'expires_at' => $expiresAt,
                 ]);
-
 
             // Retourne le token et l'utilisateur connecté
             return response()->json([

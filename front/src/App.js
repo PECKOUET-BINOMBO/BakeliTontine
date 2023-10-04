@@ -1,7 +1,7 @@
 import "./App.css";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Home from "./components/home";
 import Login from "./components/auth/login";
 import Register from "./components/auth/register";
@@ -13,14 +13,42 @@ import General from "./components/parametre";
 import ParametreUsers from "./components/parametreUsers";
 import Archive from "./components/archives";
 import Bloque from "./components/bloque";
-import imgLogo from "./assets/images/fontisto_wallet.svg";
-import imgDashboard from "./assets/images/category.svg";
-import imgUsers from "./assets/images/user.svg";
-import imgMoney from "./assets/images/healthicons_money-bag-outline.svg";
-import imgParametre from "./assets/images/Vector.svg";
-import imgvector from "./assets/images/dashicons_arrow-down-alt2.svg";
+
 
 function App() {
+//recuperation du token
+  const token = localStorage.getItem("token");
+//recuperation de la date d'expiration du token
+  const expires_at = localStorage.getItem("expires_at");
+
+  //création d'une constante navigate pour la redirection
+  const navigate = useNavigate();
+
+  if(token && expires_at){
+//convertir la date actuelle en millisecondes
+    const date = Date.now();
+    //convertir en millisecondes
+    const millisecondes = date * 1000;
+    
+
+    //si le token est expiré
+    if(millisecondes > expires_at){
+      localStorage.removeItem("token");
+      localStorage.removeItem("expires_at");
+      navigate("/login");
+      
+    }
+  }
+
+
+
+
+
+  
+
+
+
+
   const [currentPath, setCurrentPath] = useState("");
   const location = useLocation();
 

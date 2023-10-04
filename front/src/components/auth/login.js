@@ -9,13 +9,12 @@ function Login() {
     .get("http://localhost:8000/api/login")
     //récupération de la réponse du backend si la requête est réussie
     .then((res) => {
-        const tokenExpire = res.data; // Utilisez "const" pour déclarer la variable
+        const tokenExpire = res.data; // Utilisez "const" pour déclarer la variable dans laquelle vous souhaitez stocker la réponse de la requête
         console.log(tokenExpire);
     })
-    
     //récupération de l'erreur si la requête échoue
     .catch((err) => {
-      console.log("echec");
+        console.log(err.response.data);
     });
 
    
@@ -48,10 +47,18 @@ function Login() {
       .then((res) => {
         //console.log(res);
         console.log(res.data);
+//recupération de la date d'expiration du token
+        const tokenExpire = res.data.expires_at; 
+        //convertir en date 
+        const date = new Date(tokenExpire).getTime();
+        //convertir en millisecondes
+        const millisecondes = date * 1000;
 
         if (res.data.token) {
           //stockage du token dans le localstorage
           localStorage.setItem("token", res.data.token);
+          //stockage de la date d'expiration du token dans le localstorage
+          localStorage.setItem("expires_at", millisecondes);
           //redirection vers la page d'accueil
           navigate("/");
         } else {
