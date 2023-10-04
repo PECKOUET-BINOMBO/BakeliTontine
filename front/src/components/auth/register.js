@@ -226,8 +226,8 @@ function Register() {
                   <option></option>
                   <option value="Admin">Admin</option>
                   <option
-                    value="Simple membre">
-                    Simple membre
+                    value="Membre">
+                    Membre
                   </option>
                 </select>
                 {errors.role && <p className="text-danger">{errors.role}</p>}
