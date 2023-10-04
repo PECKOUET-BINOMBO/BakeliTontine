@@ -31,13 +31,14 @@ function Sidebar() {
   // Fonction pour se déconnecter
 
   const handleLogout = () => { 
-    localStorage.removeItem("token"); 
-    localStorage.removeItem("expires_at");
+    //suppression de tout le contenu du localstorage
+    localStorage.clear();
     navigate("/login");
   };
 
   // recuperation du token
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
   return (
     <div className="sidebar col-3 heigtht-box">
       <Link to="/" className="logo">
@@ -53,11 +54,14 @@ function Sidebar() {
           <img src={imgDashboard} alt="image dashboard" /> Dashboard
         </Link>
       </li>
+      {/* si token existe et que le role est admin alors on affiche */}
+      {token && role === "Admin" ? (
       <li style={getLiStyle("/users")}>
         <Link to="/users">
           <img src={imgUsers} alt="image user" /> Utilisateurs
         </Link>
       </li>
+      ) : null}
       <li style={getLiStyle("/cotisations")}>
         <Link to="/cotisations">
           <img src={imgMoney} alt="image cotisations" /> Cotisations

@@ -33,8 +33,7 @@ function App() {
 
     //si le token est expiré
     if(millisecondes > expires_at){
-      localStorage.removeItem("token");
-      localStorage.removeItem("expires_at");
+      localStorage.clear();
       navigate("/login");
       
     }

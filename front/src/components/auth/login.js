@@ -59,6 +59,28 @@ function Login() {
           localStorage.setItem("token", res.data.token);
           //stockage de la date d'expiration du token dans le localstorage
           localStorage.setItem("expires_at", millisecondes);
+          //stockage de l'id de l'utilisateur dans le localstorage
+          localStorage.setItem("id", res.data.user.id);
+          //stockage du nom de l'utilisateur dans le localstorage
+          localStorage.setItem("name", res.data.user.name);
+          //stockage du prénom de l'utilisateur dans le localstorage
+          localStorage.setItem("prenom", res.data.user.prenom);
+          //stockage de la date d'anniversaire de l'utilisateur dans le localstorage
+          localStorage.setItem("date_naissance", res.data.user.date_naissance);
+
+          //stockage du rôle de l'utilisateur dans le localstorage
+          localStorage.setItem("role", res.data.user.role);
+          //stockage de l'email de l'utilisateur dans le localstorage
+          localStorage.setItem("email", res.data.user.email);
+          //stockage du numéro de téléphone de l'utilisateur dans le localstorage
+          localStorage.setItem("telephone", res.data.user.telephone);
+          //stockage de l'adresse de l'utilisateur dans le localstorage
+          localStorage.setItem("adresse", res.data.user.adresse);
+          //stockage de la profession de l'utilisateur dans le localstorage
+          localStorage.setItem("profession", res.data.user.profession);
+          //stockage de l'organisation de l'utilisateur dans le localstorage
+          localStorage.setItem("organisation", res.data.user.organisation);
+          
           //redirection vers la page d'accueil
           navigate("/");
         } else {

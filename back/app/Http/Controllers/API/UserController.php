@@ -123,7 +123,7 @@ class UserController extends Controller
                     'expires_at' => $expiresAt,
                 ]);
 
-            // Retourne le token et l'utilisateur connecté
+            // Retourne le token et toutes les informations de l'utilisateur
             return response()->json([
                 'message' => 'Connexion réussie',
                 'user' => $user,
