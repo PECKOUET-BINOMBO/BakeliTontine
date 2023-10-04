@@ -92,25 +92,39 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        // validation des données
+        // Validation des données
         $request->validate([
             'email' => 'required|string|email:rfc,dns|max:255',
             'password' => 'required|string|min:4',
         ]);
-        //verification de l'existence de l'utilisateur à partir de son email
+
+        // Vérification de l'existence de l'utilisateur à partir de son email
         $user = User::where('email', $request->email)->first();
-        //verification du mot de passe de l'utilisateur selon l'email
+
+        // Vérification du mot de passe de l'utilisateur selon l'email
         if ($user && Hash::check($request->password, $user->password)) {
-            //creation du token
-            $token = $user->createToken('authToken')->accessToken;
-            //retourne le token et l'utilisateur connecté
+            // Création du jeton avec date d'expiration à 1 heure à partir de maintenant
+            $token = $user->createToken('authToken', ['*'])->accessToken;
+            $expiresAt = Carbon::now()->addHour(); // Définit l'heure d'expiration à 1 heure à partir de maintenant
+
+            // Mettez à jour l'heure d'expiration du jeton dans la base de données
+            DB::table('oauth_access_tokens')
+                ->where('user_id', $user->id)
+                ->update([
+                    'expires_at' => $expiresAt,
+                ]);
+
+
+            // Retourne le token et l'utilisateur connecté
             return response()->json([
                 'message' => 'Connexion réussie',
                 'user' => $user,
                 'token' => $token,
+                'expires_at' => $expiresAt,
             ], 200);
         }
-        //retourne un message d'erreur si l'utilisateur n'existe pas ou si le mot de passe est incorrect
+
+        // Retourne un message d'erreur si l'utilisateur n'existe pas ou si le mot de passe est incorrect
         return response()->json([
             'message' => 'Identifiants incorrects',
         ], 401);

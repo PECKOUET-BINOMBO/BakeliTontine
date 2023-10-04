@@ -34,57 +34,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* <div className="sidebar col-3">
-        <Link to="/" className="logo">
-          <img src={imgLogo} alt="image logo" /> <h5>Bakéli Tontine</h5>
-        </Link>
-
-        <div className="menubar">
-          <ul>
-            <li style={getLiStyle("/")}>
-              {" "}
-              <Link to="/">
-                <img src={imgDashboard} alt="image dashboard" /> Dashboard
-              </Link>{" "}
-            </li>
-            <li style={getLiStyle("/users")}>
-              {" "}
-              <Link to="/users">
-                <img src={imgUsers} alt="image user" /> Utilisateurs
-              </Link>{" "}
-            </li>
-            <li style={getLiStyle("/cotisations")}>
-              {" "}
-              <Link to="/cotisations">
-                <img src={imgMoney} alt="image cotisations" /> Cotisations
-              </Link>{" "}
-            </li>
-            <li>
-              <img src={imgParametre} /> Paramètres{" "}
-              <img src={imgvector} alt="image vector" />
-              <ul className="ulSous">
-                <li style={getLiStyle("/parametre/admin")}>
-                  {" "}
-                  <Link to="/parametre/admin">Généraux</Link>{" "}
-                </li>
-                <li style={getLiStyle("/parametre/users")}>
-                  {" "}
-                  <Link to="/parametre/users">Utilisateurs</Link>{" "}
-                </li>
-                <li style={getLiStyle("/archives")}>
-                  {" "}
-                  <Link to="/archives">Archives</Link>
-                </li>
-                <li style={getLiStyle("/bloque")}>
-                  {" "}
-                  <Link to="/bloque">Membres bloqués</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div> */}
-      {/* <div className="pages col-9 "> */}
+    
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -98,7 +48,6 @@ function App() {
           <Route path="/archives" element={<Archive />} />
           <Route path="/bloque" element={<Bloque />} />
         </Routes>
-      {/* </div> */}
     </div>
   );
 }
