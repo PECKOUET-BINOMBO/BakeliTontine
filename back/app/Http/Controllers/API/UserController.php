@@ -109,8 +109,8 @@ class UserController extends Controller
 
             //$expiresAt = Carbon::now()->addHour(); // Définit l'heure d'expiration à 1 heure à partir de maintenant
             //$expiresAt = Carbon::now()->addSecond(30); // Définit l'heure d'expiration à 30 secondes à partir de maintenant
-            $expiresAt = Carbon::now()->addMinute(1); // Définit l'heure d'expiration à 30 minutes à partir de maintenant
-            //$expiresAt = Carbon::now()->addDay(30); // Définit l'heure d'expiration à 30 jours à partir de maintenant
+            //$expiresAt = Carbon::now()->addMinute(1); // Définit l'heure d'expiration à 30 minutes à partir de maintenant
+            $expiresAt = Carbon::now()->addDay(2); // Définit l'heure d'expiration à 2 jours à partir de maintenant
             //$expiresAt = Carbon::now()->addMonth(30); // Définit l'heure d'expiration à 30 mois à partir de maintenant
             //$expiresAt = Carbon::now()->addYear(30); // Définit l'heure d'expiration à 30 années à partir de maintenant
 
