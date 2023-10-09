@@ -28,6 +28,7 @@ import axios from "axios";
   const handleSubmit = (e) => {
     //empêcher le comportement par défaut du formulaire
     e.preventDefault();
+    setTimeout(() => {
     //création d'un objet data pour récupérer les données du formulaire
     const data = {
       nom: nom,
@@ -63,6 +64,7 @@ import axios from "axios";
         console.log(err.response.data.errors);
         setErrors(err.response.data.errors);
       });
+    } , 500);
   };
 
     return (

@@ -9,15 +9,13 @@ function Login() {
     .get("http://localhost:8000/api/login")
     //récupération de la réponse du backend si la requête est réussie
     .then((res) => {
-        const tokenExpire = res.data; // Utilisez "const" pour déclarer la variable dans laquelle vous souhaitez stocker la réponse de la requête
-        console.log(tokenExpire);
+      const tokenExpire = res.data; // Utilisez "const" pour déclarer la variable dans laquelle vous souhaitez stocker la réponse de la requête
+      console.log(tokenExpire);
     })
     //récupération de l'erreur si la requête échoue
     .catch((err) => {
-        console.log(err.response.data);
+      console.log(err.response.data);
     });
-
-   
 
   ////////////////////////////création d'un état pour gérer les données du formulaire//////////////////////////////////////
   const [email, setEmail] = React.useState("");
@@ -33,23 +31,25 @@ function Login() {
   const handleSubmit = (e) => {
     //empêcher le comportement par défaut du formulaire
     e.preventDefault();
+    setTimeout(() => {
     //création d'un objet data pour récupérer les données du formulaire
     const data = {
       email: email,
       password: password,
     };
 
-    /////////////////////////////envoi des données au backend//////////////////////////
-    axios
+    
       //envoi de la requête post au backend
-      .post("http://localhost:8000/api/login", data)
-      //récupération de la réponse du backend si la requête est réussie
-      .then((res) => {
-        //console.log(res);
-        console.log(res.data);
-//recupération de la date d'expiration du token
-        const tokenExpire = res.data.expires_at; 
-        //convertir en date 
+      axios.post("http://localhost:8000/api/login", data)
+        //récupération de la réponse du backend si la requête est réussie
+        .then((res) => {
+          console.log(res.data);
+          //réinitialisation du formulaire
+          setEmail("");
+          setPassword("");
+          //recupération de la date d'expiration du token
+        const tokenExpire = res.data.expires_at;
+        //convertir en date
         const date = new Date(tokenExpire).getTime();
         //convertir en millisecondes
         const millisecondes = date * 1000;
@@ -80,18 +80,16 @@ function Login() {
           localStorage.setItem("profession", res.data.user.profession);
           //stockage de l'organisation de l'utilisateur dans le localstorage
           localStorage.setItem("organisation", res.data.user.organisation);
-          
+        }
           //redirection vers la page d'accueil
           navigate("/");
-        } else {
-          console.log("err.response.data.errors");
-        }
-      })
-      //récupération de l'erreur si la requête échoue
-      .catch((err) => {
-        console.log(err.response.data);
-        setErrors(err.response.data);
-      });
+        })
+        //récupération de l'erreur si la requête échoue
+        .catch((err) => {
+          console.log(err.response.data);
+          setErrors(err.response.data);
+        });
+    }, 500);// temps d'attente de 500ms avant l'envoi de la requête
   };
 
   return (
